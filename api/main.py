@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 # Log startup to Vercel logs
-print("🚀 FastAPI app starting on Vercel...")
+print("🚀 FastAPI app starting...")
 
 # ----------------------------------------------------------------------------
 # FASTAPI APPLICATION INITIALIZATION
@@ -13,23 +13,18 @@ app = FastAPI()
 # ----------------------------------------------------------------------------
 # STATIC FILES SETUP
 # ----------------------------------------------------------------------------
-try:
-    app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")  # Serve static files
-    print("✅ Static files mounted at /uploads")
-except Exception as static_error:
-    print("❌ Static File Mount Error:", static_error)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")  # Serve static files
 
 # ----------------------------------------------------------------------------
 # CORS MIDDLEWARE SETUP
 # ----------------------------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace "*" with specific domains in production
+    allow_origins=["*"],  # Update with specific origin in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-print("✅ CORS middleware configured.")
 
 # ----------------------------------------------------------------------------
 # DATABASE INITIALIZATION
@@ -44,12 +39,10 @@ except Exception as db_error:
     print("❌ Database Initialization Error:", db_error)
 
 # ----------------------------------------------------------------------------
-# ROUTES IMPORT
+# ROUTES IMPORT & SETUP
 # ----------------------------------------------------------------------------
 try:
-    from api.routes import (
-        auth, users, contact, slider, trainer, admin, product
-    )
+    from api.routes import auth, users, contact, slider, trainer, admin, product
 
     app.include_router(auth.router, prefix="/auth", tags=["Auth"])
     app.include_router(users.router, prefix="/users", tags=["Users"])
@@ -68,4 +61,4 @@ except Exception as route_error:
 # ----------------------------------------------------------------------------
 @app.get("/")
 def read_root():
-    return {"message": "✅ FastAPI main.py is working on Vercel"}
+    return {"message": "✅ FastAPI main.py is working correctly"}
