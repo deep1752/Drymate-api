@@ -1,44 +1,64 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from api.routes import auth, users, contact, slider, trainer, admin, product
-from api.database.connection import engine
-from api.database.base import Base
 
-# Create database tables if they don't exist
-Base.metadata.create_all(bind=engine)
+# Log startup to Vercel logs
+print("🚀 FastAPI app starting...")
 
-# Initialize FastAPI app
+# ----------------------------------------------------------------------------
+# FASTAPI APPLICATION INITIALIZATION
+# ----------------------------------------------------------------------------
 app = FastAPI()
 
-# Serve static files
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")  # Serve images
+# ----------------------------------------------------------------------------
+# STATIC FILES SETUP
+# ----------------------------------------------------------------------------
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")  # Serve static files
 
-# ✅ Add CORS Middleware
+# ----------------------------------------------------------------------------
+# CORS MIDDLEWARE SETUP
+# ----------------------------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow frontend domain
+    allow_origins=["*"],  # Update with specific origin in production
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Include authentication-related routes
-app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+# ----------------------------------------------------------------------------
+# DATABASE INITIALIZATION
+# ----------------------------------------------------------------------------
+try:
+    from api.database.connection import engine
+    from api.database.base import Base
 
-# Include user-related routes
-app.include_router(users.router, prefix="/users", tags=["Users"])
+    Base.metadata.create_all(bind=engine)
+    print("✅ Database tables initialized.")
+except Exception as db_error:
+    print("❌ Database Initialization Error:", db_error)
 
+# ----------------------------------------------------------------------------
+# ROUTES IMPORT & SETUP
+# ----------------------------------------------------------------------------
+try:
+    from api.routes import auth, users, contact, slider, trainer, admin, product
 
-app.include_router(contact.router, prefix="/contact", tags=["Contact"])
+    app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+    app.include_router(users.router, prefix="/users", tags=["Users"])
+    app.include_router(contact.router, prefix="/contact", tags=["Contact"])
+    app.include_router(slider.router, prefix="/slider", tags=["Slider"])
+    app.include_router(trainer.router, prefix="/trainer", tags=["Trainer"])
+    app.include_router(admin.router, prefix="/admin", tags=["AdminDetails"])
+    app.include_router(product.router, prefix="/product", tags=["Product"])
 
-app.include_router(slider.router, prefix="/slider", tags=["Slider"])
+    print("✅ Routers loaded successfully.")
+except Exception as route_error:
+    print("❌ Router Import Error:", route_error)
 
-
-app.include_router(trainer.router, prefix="/trainer", tags=["Trainer"])
-
-
-app.include_router(admin.router, prefix="/admin", tags=["AdminDetails"])
-
-
-app.include_router(product.router, prefix="/product", tags=["Product"])
+# ----------------------------------------------------------------------------
+# ROOT ENDPOINT
+# ----------------------------------------------------------------------------
+@app.get("/")
+def read_root():
+    return {"message": "✅ FastAPI main.py is working correctly"}
