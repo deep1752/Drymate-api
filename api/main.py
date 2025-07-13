@@ -13,7 +13,7 @@ app = FastAPI()
 # ----------------------------------------------------------------------------
 # STATIC FILES SETUP
 # ----------------------------------------------------------------------------
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")  # Serve static files
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # ----------------------------------------------------------------------------
 # CORS MIDDLEWARE SETUP
