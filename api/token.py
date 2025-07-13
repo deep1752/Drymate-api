@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Function to create a JWT access token
-def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes=30)):
+def create_access_token(data: dict, expires_delta: timedelta = timedelta(60 * 24)):
     """
     Generates a JWT access token with an expiration time.
     
