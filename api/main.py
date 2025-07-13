@@ -44,7 +44,7 @@ except Exception as db_error:
 try:
     from api.routes import (
         auth, users, contact,
-        slider, trainer, admin
+        slider, trainer, admin, product
     )
 
     app.include_router(auth.router, prefix="/auth", tags=["Auth"])
@@ -54,6 +54,7 @@ try:
     app.include_router(trainer.router, prefix="/trainer", tags=["Trainer"])
  
     app.include_router(admin.router, prefix="/admin", tags=["AdminDetails"])
+    app.include_router(product.router, prefix="/product", tags=["Products"])
   
 
     print("✅ Routers loaded successfully.")

@@ -37,8 +37,3 @@ python-multipart
 
 databases
 
-
-mangum
-
-
-asgiref
