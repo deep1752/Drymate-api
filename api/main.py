@@ -64,6 +64,6 @@ except Exception as route_error:
 # ----------------------------------------------------------------------------
 # ROOT ENDPOINT
 # ----------------------------------------------------------------------------
-# @app.get("/")
-# def read_root():
-#     return {"message": "✅ FastAPI main.py is working on Vercel"}
+@app.get("/")
+def read_root():
+    return {"message": "✅ FastAPI main.py is working on Vercel"}
