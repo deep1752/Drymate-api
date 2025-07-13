@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-import os
+
 # Log startup to Vercel logs
 print("🚀 FastAPI app starting...")
 
@@ -10,13 +10,14 @@ print("🚀 FastAPI app starting...")
 # ----------------------------------------------------------------------------
 app = FastAPI()
 
-# app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")  # Serve static files
+# ----------------------------------------------------------------------------
+# STATIC FILES SETUP
+# ----------------------------------------------------------------------------
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")  # Serve static files
 
-if os.path.isdir("uploads"):
-    app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
-else:
-    print("⚠️ Warning: 'uploads' directory not found, skipping static mount.")
-
+# ----------------------------------------------------------------------------
+# CORS MIDDLEWARE SETUP
+# ----------------------------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Update with specific origin in production
